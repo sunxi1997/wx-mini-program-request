@@ -63,7 +63,7 @@ class Request {
    }
 
    /**
-    * @method  get     发送一个请求
+    * @method  get     发送一个get请求
     * @for     Request
     *
     * @param   {String}       url=''      请求的地址
@@ -76,7 +76,7 @@ class Request {
    }
 
    /**
-    * @method  post     发送一个请求
+    * @method  post     发送一个post请求
     * @for     Request
     *
     * @param   {String}       url=''      请求的地址
@@ -89,7 +89,7 @@ class Request {
    }
 
    /**
-    * @param {Function} func - 在所有请求发送前会进行拦截并调用此函数
+    * @param {Function} func - 在所有请求发送前会进行拦截并调用此函数,可在此对所有请求的参数做判断修改
     * @for     Request
     */
    beforeRequest(func) {
@@ -99,7 +99,7 @@ class Request {
 
 
    /**
-    * @param {Function} func - 在所有请求收到会使用此回调
+    * @param {Function} func - 在所有请求响应后会使用此回调，可在此对所有响应结果做处理
     * @for     Request
     */
    afterRequest(func) {
