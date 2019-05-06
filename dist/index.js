@@ -1,8 +1,25 @@
 class Request {
    constructor() {
-      this.BASE_URL = '';
-      this._BEFORE_REQUEST = null;
-      this._AFTER_REQUEST = null;
+      
+      let _BASE_URL = '';
+      let _BEFORE_REQUEST = null;
+      let _AFTER_REQUEST = null;
+
+      // 设置访问器属性，确保属性类型不会出错
+      Object.defineProperties(this, {
+         BASE_URL: {
+            get:()=>_BASE_URL,
+            set:val=>typeof val === 'string' && (_BASE_URL = val)
+         },
+         BEFORE_REQUEST: {
+            get:()=>_BEFORE_REQUEST,
+            set:val=>typeof val === 'string' && (_BEFORE_REQUEST = val)
+         },
+         AFTER_REQUEST: {
+            get:()=>_AFTER_REQUEST,
+            set:val=>typeof val === 'string' && (_AFTER_REQUEST = val)
+         },
+      })
    }
 
    /**
@@ -11,7 +28,9 @@ class Request {
     * @param   {String}    url   要设置的url
     */
    setBaseUrl(url) {
-      this.BASE_URL = url;
+      typeof url === 'string' ?
+      this.BASE_URL = url :
+         console.error('setBaseUrl的参数必须为string类型:',url);
    }
 
    /**
@@ -30,8 +49,8 @@ class Request {
       return new Promise((success, fail) => {
          new Promise((resolve, reject) => {
             /*请求前处理参数*/
-            if (this._BEFORE_REQUEST) {
-               let returnVal = this._BEFORE_REQUEST(params);
+            if (this.BEFORE_REQUEST) {
+               let returnVal = this.BEFORE_REQUEST(params);
                returnVal instanceof Promise ?
                   returnVal.then(resolve, reject) :
                   resolve(params)
@@ -46,8 +65,8 @@ class Request {
                      new Promise((resolve, reject)=>{
                         let {statusCode:code,data:rData} = response;
 
-                        let data = (this._AFTER_REQUEST?
-                           this._AFTER_REQUEST(response):
+                        let data = (this.AFTER_REQUEST?
+                           this.AFTER_REQUEST(response,params):
                            rData) || rData;
 
                         data instanceof Promise ?
@@ -89,22 +108,25 @@ class Request {
    }
 
    /**
-    * @param {Function} func - 在所有请求发送前会进行拦截并调用此函数,可在此对所有请求的参数做判断修改
+    * @param {Function} func - 设置请求前的回调函数
     * @for     Request
+    *
     */
    beforeRequest(func) {
-      typeof func === 'function' &&
-      (this._BEFORE_REQUEST = func)
+      typeof func === 'function' ?
+         this.BEFORE_REQUEST = func :
+         console.error('beforeRequestl的参数必须为function类型:',func);
    }
 
 
    /**
-    * @param {Function} func - 在所有请求响应后会使用此回调，可在此对所有响应结果做处理
+    * @param {Function} func - 设置请求响应后回调函数
     * @for     Request
     */
    afterRequest(func) {
-      typeof func === 'function' &&
-      (this._AFTER_REQUEST = func)
+      typeof func === 'function' ?
+         this.AFTER_REQUEST = func :
+         console.error('afterRequest的参数必须为function类型:',func);
    }
 
 }

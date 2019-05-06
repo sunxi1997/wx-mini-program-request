@@ -29,6 +29,16 @@ Request.post(...)
 Request.request(...)
 ````
 
+## 内置属性
+
+内置属性被设置了访问器属性，类型已固定
+
+属性              | 类型    | 修改方法 | 说明
+ ---             |---       |---    |---    
+BASE_URL         |String   |  setBaseUrl  | 请求url的前缀，若地址不是http开头的，都会加上此前缀
+BEFORE_REQUEST   |Function | beforeRequest | 请求前的回调，请求发送前会被此函数拦截，可在回调内对请求做处理，详见方法 beforeRequest
+AFTER_REQUEST    |Function | afterRequest |请求完成后的回调，请求得到响应后会被此函数拦截，可在回调内对响应做处理，详见方法 afterRequest
+
 ## 方法
 
 #### setBaseUrl(url)
@@ -75,12 +85,17 @@ Request.request(...)
 ````
 设置一个唯一的请求前回调，当发送一个新的请求时，请求参数会被传入此回调函数，如果回调函数返回值是Object,会覆盖原有的参数作为请求体，如果回调函数是Promise，会在该then后发送请求并使用then回调的参数作为请求体；
 
+回调函数接收一个参数，为请求参数
+
 ### afterRequest(callback)
 
 ````
 @param {Function} callback - 请求前回调
 ````
 设置一个唯一的请求完成后回调，当请求得到响应时，响应内容会被传入此回调函数，如果回调函数返回值是Object,会覆盖原有的参数作为响应参数，如果回调函数是Promise，会在该then后发送请求并使用then回调的参数作为响应参数；
+
+
+回调函数接收两个个参数，第一个参数为响应内容，第二个为请求时携带的参数
 
 ## 示例
 
