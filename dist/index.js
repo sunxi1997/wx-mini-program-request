@@ -44,7 +44,7 @@ class Request {
     * @return  {Promise}
     */
    request(url='', type='get', params={}) {
-      if(this.BASE_URL)
+      if(this.BASE_URL && url.indexOf('http')!==0)
          url = this.BASE_URL+url;
       return new Promise((success, fail) => {
          new Promise((resolve, reject) => {
