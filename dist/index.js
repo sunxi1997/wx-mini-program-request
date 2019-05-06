@@ -13,11 +13,11 @@ class Request {
          },
          BEFORE_REQUEST: {
             get:()=>_BEFORE_REQUEST,
-            set:val=>typeof val === 'string' && (_BEFORE_REQUEST = val)
+            set:val=>typeof val === 'function' && (_BEFORE_REQUEST = val)
          },
          AFTER_REQUEST: {
             get:()=>_AFTER_REQUEST,
-            set:val=>typeof val === 'string' && (_AFTER_REQUEST = val)
+            set:val=>typeof val === 'function' && (_AFTER_REQUEST = val)
          },
       })
    }
