@@ -48,6 +48,7 @@ class Request {
          url = this.BASE_URL+url;
       return new Promise((success, fail) => {
          new Promise((resolve, reject) => {
+            params = JSON.parse(JSON.stringify(params))
             /*请求前处理参数*/
             if (this.BEFORE_REQUEST) {
                let returnVal = this.BEFORE_REQUEST(params);
@@ -56,17 +57,17 @@ class Request {
                   resolve(params)
             } else
                resolve(params);
-         }).then(params => {
+         }).then(data => {
             wx.request({
                   url: url,
                   method: type || 'get',
-                  data: params,
+                  data,
                   complete:response=> {
                      new Promise((resolve, reject)=>{
                         let {statusCode:code,data:rData} = response;
 
                         let data = (this.AFTER_REQUEST?
-                           this.AFTER_REQUEST(response,params):
+                           this.AFTER_REQUEST(response,{url,type,params}):
                            rData) || rData;
 
                         data instanceof Promise ?
@@ -74,7 +75,7 @@ class Request {
                            code===200?resolve(data):reject(data)
                      }).then(success,fail)
                   },
-                  ...params
+                  ...data
                }
             );
          },fail)
@@ -111,6 +112,9 @@ class Request {
     * @param {Function} func - 设置请求前的回调函数
     * @for     Request
     *
+    * 设置一个唯一的请求前回调，当发送一个新的请求时，请求参数会被传入此回调函数，如果回调函数返回值是Object,会覆盖原有的参数作为请求体，如果回调函数是Promise，会在该then后发送请求并使用then回调的参数作为请求体；
+    *
+    * 回调函数接收一个参数，为请求参数
     */
    beforeRequest(func) {
       typeof func === 'function' ?
@@ -122,6 +126,10 @@ class Request {
    /**
     * @param {Function} func - 设置请求响应后回调函数
     * @for     Request
+    *
+    * 设置一个唯一的请求完成后回调，当请求得到响应时，响应内容会被传入此回调函数，如果回调函数返回值是Object,会覆盖原有的参数作为响应参数，如果回调函数是Promise，会在该then后发送请求并使用then回调的参数作为响应参数
+    *
+    * 回调函数接收两个个参数，第一个参数为响应内容，第二个为请求数据，包含url（请求地址），type（请求类型），params（请求参数）
     */
    afterRequest(func) {
       typeof func === 'function' ?
