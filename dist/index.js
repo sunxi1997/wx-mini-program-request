@@ -39,17 +39,21 @@ class Request {
     *
     * @param   {String}       url=''      请求的地址
     * @param   {'get'|'post'} type='get'     请求方式
-    * @param   {Object}       params={}   请求的参数
+    * @param   {Object}       data={}   请求的参数
     *
     * @return  {Promise}
     */
-   request(url='', type='get', params={}) {
+   request(url='', type='get', data={}) {
       if(this.BASE_URL && url.indexOf('http')!==0)
          url = this.BASE_URL+url;
       return new Promise((success, fail) => {
          new Promise((resolve, reject) => {
-            params = JSON.parse(JSON.stringify(params))
             /*请求前处理参数*/
+            let params = {
+               url,
+               type,
+               data:JSON.parse(JSON.stringify(data))
+            }
             if (this.BEFORE_REQUEST) {
                let returnVal = this.BEFORE_REQUEST(params);
                returnVal instanceof Promise ?
@@ -57,17 +61,18 @@ class Request {
                   resolve(params)
             } else
                resolve(params);
-         }).then(data => {
+         }).then(params => {
+            /*处理参数后发送请求*/
             wx.request({
                   url: url,
                   method: type || 'get',
-                  data,
+                  ...params,
                   complete:response=> {
                      new Promise((resolve, reject)=>{
                         let {statusCode:code,data:rData} = response;
 
                         let data = (this.AFTER_REQUEST?
-                           this.AFTER_REQUEST(response,{url,type,params}):
+                           this.AFTER_REQUEST(response,{url,type,params: params}):
                            rData) || rData;
 
                         data instanceof Promise ?
@@ -75,7 +80,6 @@ class Request {
                            code===200?resolve(data):reject(data)
                      }).then(success,fail)
                   },
-                  ...data
                }
             );
          },fail)
@@ -119,7 +123,7 @@ class Request {
    beforeRequest(func) {
       typeof func === 'function' ?
          this.BEFORE_REQUEST = func :
-         console.error('beforeRequestl的参数必须为function类型:',func);
+         console.error('beforeRequest的参数必须为function类型:',func);
    }
 
 

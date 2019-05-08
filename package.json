@@ -1,6 +1,6 @@
 {
   "name": "wx-mini-program-request",
-  "version": "1.0.9",
+  "version": "1.2.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
