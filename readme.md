@@ -46,36 +46,36 @@ AFTER_REQUEST    |Function | afterRequest |请求完成后的回调，请求得�
 @param   {String}    url   要设置的url
 ````
 
-#### request(url,type,params)
+#### request(url,type,data)
 ````
  @param   {String}        url=''      请求的地址
  @param   {'get'|'post'}  type='get'     请求方式
- @param   {Object}        params={}   请求的参数
+ @param   {Object}        data={}   请求的参数
 
  @return  {Promise}
 ````
 
-### get(url,params)
+### get(url,data)
 
 ````
  @param   {String}        url=''      请求的地址
- @param   {Object}        params={}   请求的参数
+ @param   {Object}        data={}   请求的参数
 
  @return  {Promise}
  
- 等同于request(url,'get',params)
+ 等同于request(url,'get',data)
 ````
 
 
-### post(url,params)
+### post(url,data)
 
 ````
  @param   {String}        url=''      请求的地址
- @param   {Object}        params={}   请求的参数
+ @param   {Object}        data={}   请求的参数
 
  @return  {Promise}
  
- 等同于request(url,'post',params)
+ 等同于request(url,'post',data)
 ````
 
 ### beforeRequest(callback)
